@@ -1,5 +1,5 @@
 %mobility transfer function
-deltat=10;
+deltat=32;
 %identifying top 10% most mobile particles over deltat
 H1=circshift(H,-deltat);
 H2=H1-H;

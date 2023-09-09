@@ -2,10 +2,10 @@
 % HH got from the code excitations
 tic
 % % % clearvars -except HH gr
-col=16; %column corresponding to ta in HH
-%no is 19 for 5 frames per sec and 16 for 4 frames per sec
-H=HH(:,[1 2 3 4 col]);
-H=sortrows(H,[4 3]);
+% col=15; %column corresponding to ta in HH
+% %no is 19 for 5 frames per sec and 16 for 4 frames per sec
+% H=HH(:,[1 2 3 4 col]);
+% H=sortrows(H,[4 3]);
 clearvars -except H gr
 % H=horzcat(H,HH(:,col));
 % HH1=accumarray(H(:,3),H(:,5));
@@ -15,7 +15,7 @@ clearvars -except H gr
 f=H(:,5)~=0;
 h1=sum(f)/length(H(:,5)); % it takes care of average in the denominator
 sigmaL=21.7*(1.3); %from previous work's data analysis
-ta=24;
+ta=30;
 ta2=round(ta/2);
 H1=circshift(H,ta2);
 H2=circshift(H,-ta2);

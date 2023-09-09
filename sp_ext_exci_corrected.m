@@ -1,11 +1,10 @@
 %calculation of displacement density at a distance r from the excitation
 % HH got from the code excitations
 tic
-% % % clearvars -except HH gr
-col=16; %column corresponding to ta in HH
+% col=17; %column corresponding to ta in HH
+% H=HH(:,[1 2 3 4 col]);
+% H=sortrows(H,[4 3]);
 %no is 19 for 5 frames per sec and 16 for 4 frames per sec
-H=HH(:,[1 2 3 4 col]);
-H=sortrows(H,[4 3]);
 clearvars -except H gr
 % H=horzcat(H,HH(:,col));
 % HH1=accumarray(H(:,3),H(:,5));
@@ -15,7 +14,7 @@ clearvars -except H gr
 f=H(:,5)~=0;
 h1=sum(f)/length(H(:,5)); % it takes care of average in the denominator
 sigmaL=21.7*(1.3); %from previous work's data analysis
-ta=24;
+ta=26;
 ta2=round(ta/2);
 H1=circshift(H,ta2);
 H2=circshift(H,-ta2);
@@ -30,11 +29,17 @@ d=0:(0.1)*sigmaL:(1.5)*max(H(:,1));
 density=[];
 % %in order to calculate distances it is done separately for each frame
 % %the for loop is to calculate the delta function
-for i=1:1:max(H(:,3))
-    f=(H(:,3)==i);
-    B=H(f,:); %all coordinates at that frame
-    f=B(:,5)==1;
-    C=B(f,:); % excitation coordinates in ith frame
+for i=ta2+1:1:max(H(:,3))
+    f=(H(:,3)==i-ta2); % coordinates at -ta/2 to calculate distances
+    B=H(f,:);
+    f=(H(:,3)==i & H(:,5)==1); % coordinates of excitations at zeroth time
+    CC=H(f,:);
+    [~,~,ib]=intersect(CC(:,4),B(:,4)); % coordinates of excitations of 0 at -ta/2
+    C=B(ib,:);
+%     f=(H(:,3)==i);
+%     B=H(f,:); %all coordinates at that frame
+%     f=B(:,5)==1;
+%     C=B(f,:); % excitation coordinates in ith frame
     D=pdist2(B(:,1:2),C(:,1:2));
         if isempty(C)==0
             [bincounts,ind]=histc(D,d);
@@ -43,7 +48,6 @@ for i=1:1:max(H(:,3))
                 J=accumarray(ind(:,j),B(:,6));
                 J((length(J))+1:numel(d),1)=0;
                 G(:,j)=J;
-                J=[];
             end
             G=G./bincounts;
             density=horzcat(density,G);
@@ -58,7 +62,6 @@ I=accumarray(J(:,4),J(:,5),[],@mean);
 I=nonzeros(I);
 mu_inf=mean(I);
 % clear J I 
-
 toc
 % d1=(d*(0.1))';
 %calculation of spatial extent of excitation
